@@ -1,502 +1,90 @@
-<!DOCTYPE html>
-<!-- vim: set ts=4: -->
-<html>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"/>
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-
-<!--
-  Modified from original Node-Red source, for audio system visualization
-
-  Copyright 2013 IBM Corp.
-
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-
-  http://www.apache.org/licenses/LICENSE-2.0
-
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
+<HTML>
 <head>
-<title>Pico Hub MIDI Patch Editor</title>
-<link href="bootstrap/css/bootstrap.min.css" rel="stylesheet" media="screen">
-<link href="jquery/css/smoothness/jquery-ui-1.10.3.custom.min.css" rel="stylesheet" media="screen">
-<link rel="stylesheet" type="text/css" href="orion/built-editor.css"/>
-<link rel="stylesheet" type="text/css" href="font-awesome/css/font-awesome.min.css"/>
-<link rel="stylesheet" href="style.css">
-<style>
-table.doc {border-spacing:3px; border-collapse:separate; font-size: 80%}
-tr.top {background-color:#C0C0C0}
-tr.odd {background-color:#F0F0F0}
-tr.even {background-color:#E0E0E0}
-p.func {padding-bottom:0; margin:0px}
-p.desc {padding-left:2em; margin:0px; padding-top:0.2em; padding-bottom:0.8em; font-size:0.75em}
-p.exam {padding-left:2em; text-indent:-1.2em; margin:0px; padding-top:0; padding-bottom:0.5em; font-size:0.75em; font-weight:bold}
-pre.desc {padding-left:3em; margin:0px; padding-top:0em; padding-bottom:0.8em; font-size:0.75em;
-	background-color:#FFFFFF; border:0px; line-height:100%;
-}
-span.indent {padding-left:2em}
-span.literal {color: #006699}
-span.comment {color: #777755}
-span.keyword {color: #cc6600}
-span.function {color: #996600}
-span.mainfunction {color: #993300; font-weight: bolder}
-</style>
+	<link rel="stylesheet" type="text/css" href="litegraph.css">
+	<link rel="stylesheet" type="text/css" href="litegraph-editor.css">
+	<script type="text/javascript" src="litegraph.js"></script>
+	<script type="text/javascript" src="pico_hub_nodes.js"></script>
 </head>
-<body spellcheck="false">
-<div class="navbar navbar-inverse navbar-fixed-top">
-	<div class="navbar-inner">
-		<div class="container-fluid">
-			<span class="brand">Pico Hub MIDI Patch Editor</a></span>
-			<div class="btn-group pull-right">
-				<a class="btn dropdown-toggle" data-toggle="dropdown" href="#"><i class="icon-align-justify"></i> <span class="caret"></span></a>
-				<ul class="dropdown-menu">
-					<li><a id="btn-sidebar" tabindex="-1" href="#"><i class="icon-ok pull-right"></i><i class="icon-list-alt"></i> Sidebar</a></li>
-					<li class="divider"></li>
-					<!-- <li><a id="btn-node-status" tabindex="-1" href="#"><i class="icon-ok pull-right"></i><i class="icon-info-sign"></i> Node Status</a></li>
-					<li class="divider"></li>
--->
-					<!--
-<li class="dropdown-submenu pull-left"><a tabindex="-1" href="#"><i class="icon-edit"></i> Import from...</a>
-						<ul class="dropdown-menu">
-							<li><a id="btn-import" tabindex="-1" href="#"><i class="icon-edit"></i> Clipboard...</a></li>
-							<li id="flow-menu-parent" class="dropdown-submenu pull-left">
-								<a tabindex="-1" href="#"><i class="icon-book"></i> Library</a>
-								<ul class="dropdown-menu"></ul>
-							</li>
-						</ul>
-					</li>
-					<li id="li-menu-export" class="dropdown-submenu disabled pull-left"><a tabindex="-1" href="#"><i class="icon-share"></i> Export to...</a>
-						<ul class="dropdown-menu">
-							<li id="li-menu-export-clipboard" class="disabled"><a id="btn-export-clipboard" tabindex="-1" href="#"><i class="icon-share"></i> Clipboard...</a></li>
-							<li id="li-menu-export-library" class="disabled"><a id="btn-export-library" tabindex="-1" href="#"><i class="icon-book"></i> Library...</a></li>
-						</ul>
-					</li>
-					<li class="divider"></li>
--->
-					<!--
- <li><a id="btn-config-nodes" tabindex="-1" href="#"><i class="icon-th-list"></i> Configuration nodes...</a></li>
-					<li class="divider"></li>
--->
-					<!--
-<li class="dropdown-submenu pull-left"><a tabindex="-1" href="#"><i class="icon-th-large"></i> Workspaces</a>
-						<ul id="workspace-menu-list" class="dropdown-menu">
-							<li><a id="btn-workspace-add" tabindex="-1" href="#"><i class="icon-plus"></i> Add</a></li>
-							<li><a id="btn-workspace-edit" tabindex="-1" href="#"><i class="icon-edit"></i> Rename</a></li>
-							<li><a id="btn-workspace-delete" tabindex="-1" href="#"><i class="icon-minus"></i> Delete</a></li>
-							<li class="divider"></li>
-						</ul>
-					</li>
-					<li class="divider"></li>-->
-					<li><a id="btn-keyboard-shortcuts" tabindex="-1" href="#"><i class="icon-question-sign"></i> Keyboard Shortcuts</a></li>
-					<li><a id="btn-help" tabindex="-1" href="http://node-red.github.io/docs" target="_blank"><i class="icon-question-sign"></i> Help...</a></li>
-				</ul>
-			</div>
-			<div class="btn-group pull-left">
-				<a id="btn-deploy" class="btn action-deploy disabled" href="#"><i id="btn-icn-deploy" class="icon-upload"></i>Export</a>
-				<a id="btn-import" class="btn action-import disabled" href="#"><i id="btn-icn-download" class="icon-download"></i>Import</a>
-			</div>
-		</div>
-	</div>
-</div>
-<div id="main-container" class="sidebar-closed">
-	<div id="palette">
-		<img src="img/spin.svg" class="palette-spinner"/>
-		<div id="palette-container" class="palette-scroll">
-		</div>
-		<div id="palette-search">
-			<i class="icon-search"></i><input id="palette-search-input" type="text" placeholder="filter"><a href="#" id="palette-search-clear"><i class="icon-remove"></i></a></input>
-		</div>
-	</div><!-- /palette -->
-
-	<div id="workspace">
-		<ul id="workspace-tabs"></ul>
-		<!--<div id="workspace-add-tab"><a id="btn-workspace-add-tab" href="#"><i class="icon-plus"></i></a></div>-->
-		<div id="chart"></div>
-		<div id="workspace-toolbar">
-			<div class="btn-group">
-				<a class="btn btn-small" href="#"><i class="icon-zoom-out"></i></a>
-				<a class="btn btn-small" href="#"><i class="icon-th"></i></a>
-				<a class="btn btn-small" href="#"><i class="icon-zoom-in"></i></a>
-			</div>
-		</div>
-	</div>
-
-	<div id="chart-zoom-controls">
-		<div class="btn-group">
-			<a class="btn btn-mini" id="btn-zoom-out" href="#"><i class="icon-zoom-out"></i></a>
-			<a class="btn btn-mini" id="btn-zoom-zero" href="#"><i class="icon-th"></i></a>
-			<a class="btn btn-mini" id="btn-zoom-in" href="#"><i class="icon-zoom-in"></i></a>
-		</div>
-	</div>
-
-	<div id="sidebar">
-		<ul id="sidebar-tabs"></ul>
-		<div id="sidebar-content"></div>
-	</div>
-
-	<div id="sidebar-separator"></div>
-
-</div>
-
-<div id="notifications"></div>
-<div id="dropTarget"><div>Drop the flow here</div></div>
-
-<div id="dialog" class="hide"><form id="dialog-form" class="form-horizontal"></form></div>
-<div id="node-config-dialog" class="hide"><form id="dialog-config-form" class="form-horizontal"></form><div class="form-tips" id="node-config-dialog-user-count"></div></div>
-
-<div id="node-dialog-confirm-deploy" class="hide">
-	<form class="form-horizontal">
-		<div id="node-dialog-confirm-deploy-config" style="text-align: center; padding-top: 30px;">
-			Some of the nodes are not properly configured. Are you sure you want to deploy?
-		</div>
-		<div id="node-dialog-confirm-deploy-unknown" style="text-align: center; padding-top: 10px;">
-			The workspace contains some unknown node types:
-			<ul style="width: 300px; margin: auto; text-align: left;" id="node-dialog-confirm-deploy-unknown-list"></ul>
-			Are you sure you want to deploy?
-		</div>
-	</form>
-</div>
-
-<div id="node-dialog-error-deploy" class="hide">
-	<form class="form-horizontal">
-		<div id="node-dialog-error-deploy-noio" style="text-align: center; padding-top: 10px;">
-			<p>The workspace contains no input/output nodes!</p>
-			<p>You need an input or an output to export the data!</p>
-			<p>Without such a input/output function the exported
-			code will not run properly!</p>
-		</div>
-	</form>
-</div>
-
-<div id="node-help" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="node-help-label" aria-hidden="true">
-  <div class="modal-header">
-	<h5 id="node-help-label">Keyboard Shortcuts <span style="float: right;"><a href="http://node-red.github.io/docs" target="_blank">Open help in new window &raquo;</a></span></h5>
+<body style='width:100%; height:100%'>
+  <button onclick="testGraphInspect()">Click me</button>
+  <div class='litegraph'>
+    <canvas id='mycanvas' width='2048' height='720' style='border: 1px solid'></canvas>
   </div>
-  <div class="modal-body">
-	<table>
-		<tr>
-		  <td><span class="help-key">?</span></td><td>Help</td>
-		  <td><span class="help-key">Ctrl</span> <span class="help-key">a</span></td><td>Select all nodes</td>
-		</tr>
-		<tr>
-		  <td><span class="help-key">Ctrl</span> <span class="help-key">Space</span></td><td>Toggle sidebar</td>
-		  <td><span class="help-key">Shift</span> <span class="help-key">Click</span></td><td>Select all connected nodes</td>
-		</tr>
-		<tr>
-		  <td><span class="help-key">Ctrl</span> <span class="help-key">z</span></td><td>Undo</td>
-		  <td><span class="help-key">Ctrl</span> <span class="help-key">Click</span></td><td>Add/remove node from selection</td>
-		</tr>
-		<tr>
-		  <td></td><td></td>
-		  <td><span class="help-key">Delete</span></td><td>Delete selected nodes or link</td>
-		</tr>
-		<tr>
-		  <td><span class="help-key">Ctrl</span> <span class="help-key">x</span></td><td>Cut selected nodes</td>
-		  <td></td><td></td>
-		</tr>
-		<tr>
-		  <td><span class="help-key">Ctrl</span> <span class="help-key">c</span></td><td>Copy selected nodes</td>
-		  <td><span class="help-key">Ctrl</span> <span class="help-key">v</span></td><td>Paste nodes</td>
-		</tr>
-		<tr>
-		  <td><span class="help-key">Ctrl</span> <span class="help-key">i</span></td><td>Import nodes</td>
-		  <td><span class="help-key">Ctrl</span> <span class="help-key">e</span></td><td>Export selected nodes</td>
-		</tr>
-		<tr>
-		  <td colspan="2"></td>
-		</tr>
-		<tr>
-		  <td><span class="help-key">Ctrl</span> <span class="help-key">+</span></td><td>Zoom in</td>
-		  <td><span class="help-key">Ctrl</span> <span class="help-key">-</span></td><td>Zoom out</td>
-		</tr>
-	</table>
-  </div>
-  <div class="modal-footer">
-	<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-  </div>
-</div>
+  <div id='test-graph-inspect'></div>
+<script>
 
-<div id="node-dialog-library-save-confirm" class="hide">
-	<form class="form-horizontal">
-		<div style="text-align: center; padding-top: 30px;">
-		 A <span id="node-dialog-library-save-type"></span> called <span id="node-dialog-library-save-name"></span> already exists. Overwrite?
-		</div>
-	</form>
-</div>
+var graph = new LGraph();
 
-<div id="node-dialog-library-save" class="hide">
-	<form class="form-horizontal">
-		<div class="form-row">
-			<label for="node-dialog-library-save-folder"><i class="icon-folder-open"></i> Folder</label>
-			<input type="text" id="node-dialog-library-save-folder" placeholder="Folder">
-		</div>
-		<div class="form-row">
-			<label for="node-dialog-library-save-filename"><i class="icon-file"></i> Filename</label>
-			<input type="text" id="node-dialog-library-save-filename" placeholder="Filename">
-		</div>
-	</form>
-</div>
+var canvas = new LGraphCanvas("#mycanvas", graph);
 
-<div id="node-dialog-library-lookup" class="hide">
-	<form class="form-horizontal">
-		<div class="form-row">
-			<ul id="node-dialog-library-breadcrumbs" class="breadcrumb">
-				<li class="active"><a href="#">Library</a></li>
-			</ul>
-		</div>
-		<div class="form-row">
-			<div style="vertical-align: top; display: inline-block; height: 100%; width: 30%; padding-right: 20px;">
-				<div id="node-select-library" style="border: 1px solid #999; width: 100%; height: 100%; overflow:scroll;"><ul></ul></div>
-			</div>
-			<div style="vertical-align: top; display: inline-block;width: 65%; height: 100%;">
-				<div style="height: 100%; width: 95%;" class="node-text-editor" id="node-select-library-text" ></div>
-			</div>
-		</div>
-	</form>
-</div>
-<div id="node-dialog-rename-workspace" class="hide">
-	<form class="form-horizontal">
-		<div class="form-row">
-			<label for="node-input-workspace-name" ><i class="icon-tag"></i> Name:</label>
-			<input type="text" id="node-input-workspace-name">
-		</div>
-	</form>
-</div>
-<div id="node-dialog-delete-workspace" class="hide">
-	<form class="form-horizontal">
-		<div style="text-align: center; padding-top: 30px;">
-		 Are you sure you want to delete '<span id="node-dialog-delete-workspace-name"></span>'?
-		</div>
-	</form>
-</div>
+var node_trs_in = LiteGraph.createNode("input/trs_in");
+node_trs_in.pos = [10,100];
+graph.add(node_trs_in);
 
-<script type="text/x-red" data-template-name="export-clipboard-dialog">
-	<div class="form-row">
-		<label for="node-input-export" style="display: block; width:100%;"><i class="icon-share"></i> Source Code:</label>
-		<textarea readonly style="font-family: monospace; font-size: 12px; background:rgb(226, 229, 255); padding-left: 0.5em;" class="input-block-level" id="node-input-export" rows="12"></textarea>
-	</div>
-	<div class="form-tips">
-		Select the text above and copy to the clipboard with Ctrl-A Ctrl-C.
-	</div>
+var node_usb_in = LiteGraph.createNode("input/usb_in");
+node_usb_in.pos = [10,200];
+graph.add(node_usb_in);
+
+var node_lsdj_in = LiteGraph.createNode("input/lsdj_in");
+node_lsdj_in.pos = [10,300];
+graph.add(node_lsdj_in);
+
+var in_mixer = LiteGraph.createNode("cable/mixer");
+in_mixer.pos = [200, 200]
+in_mixer.addCableInput("In");
+graph.add(in_mixer);
+
+node_trs_in.connect(0, in_mixer, 0);
+node_usb_in.connect(0, in_mixer, 1);
+node_lsdj_in.connect(0, in_mixer, 2);
+
+
+
+var node_filter = LiteGraph.createNode("channel/filter");
+node_filter.pos = [500,200];
+graph.add(node_filter);
+
+var node_map = LiteGraph.createNode("channel/map");
+node_map.pos = [750,100];
+graph.add(node_map);
+
+var node_merge = LiteGraph.createNode("channel/merge");
+node_merge.pos = [1000,200];
+graph.add(node_merge);
+
+var node_trs_out = LiteGraph.createNode("output/trs_out");
+node_trs_out.pos = [1200,100];
+node_trs_out.properties.port = 7;
+graph.add(node_trs_out);
+
+var node_usb_out = LiteGraph.createNode("output/usb_out");
+node_usb_out.pos = [1200,200];
+graph.add(node_usb_out);
+
+var node_mgb_out = LiteGraph.createNode("output/mgb_out");
+node_mgb_out.pos = [1200,300];
+graph.add(node_mgb_out);
+
+in_mixer.connect(0, node_filter, 0);
+node_filter.connect(0, node_map, 0);
+node_filter.connect(1, node_merge, 1);
+node_map.connect(0, node_merge, 0);
+node_merge.connect(0, node_trs_out, 0);
+node_merge.connect(0, node_usb_out, 0);
+node_merge.connect(0, node_mgb_out, 0);
+
+var node_test = LiteGraph.createNode("pico_hub/test");
+node_test.pos = [400,400];
+graph.add(node_test);
+
+graph.start()
+
+
+  function testGraphInspect () {
+    document.getElementById("test-graph-inspect").innerHTML = JSON.stringify(graph.serialize());
+  }
+
+
 </script>
-<script type="text/x-red" data-template-name="export-library-dialog">
-	<div class="form-row">
-		<label for="node-input-filename" ><i class="icon-tag"></i> Filename:</label>
-		<input type="text" id="node-input-filename" placeholder="Filename">
-	</div>
-</script>
-<script type="text/x-red" data-template-name="import-dialog">
-	<div class="form-row">
-		<label for="node-input-import"><i class="icon-share"></i>Nodes:</label>
-		<textarea style="font-family: monospace; font-size: 12px; background:rgb(226, 229, 255); padding-left: 0.5em;" class="input-block-level" id="node-input-import" rows="5" placeholder="Paste nodes here, or lookup in the library. When importing Arduino code, the whole flow will be replaced."></textarea>
-	</div>
-	<div class="form-tips">
-		<label for="node-input-arduino" style="font-size: 13px; padding: 2px 0px 0px 4px;">
-			<input style="margin-bottom: 4px; margin-right: 4px;" type="checkbox" id="node-input-arduino" checked="checked" class="input-block-level" />
-				&nbsp;Import copied code from the Arduino IDE
-		</label>
-	</div>
-</script>
-
-<script src="jquery/js/jquery-1.9.1.js"></script>
-<script src="bootstrap/js/bootstrap.min.js"></script>
-<script src="jquery/js/jquery-ui-1.10.3.custom.min.js"></script>
-<script src="jquery/js/jquery.ui.touch-punch.min.js"></script>
-<script src="orion/built-editor.min.js"></script>
-<script src="red/d3/d3.v3.min.js"></script>
-<script src="red/main.js"></script>
-<script src="red/ui/state.js"></script>
-<script src="red/nodes.js"></script>
-<script src="red/storage.js"></script>
-<script src="red/history.js"></script>
-<script src="red/ui/keyboard.js"></script>
-<script src="red/ui/tabs.js"></script>
-<script src="red/ui/view.js"></script>
-<script src="red/ui/sidebar.js"></script>
-<script src="red/ui/palette.js"></script>
-<script src="red/ui/tab-info.js"></script>
-<script src="red/ui/tab-config.js"></script>
-<script src="red/ui/editor.js"></script>
-<script src="red/ui/library.js"></script>
-<script src="red/ui/notifications.js"></script>
-<script src="red/ui/touch/radialMenu.js"></script>
-
-<!--
- TODO: generate some or all of this automatically from the C++ source
--->
-
-<!--
- TODO: add a field for maximum instance count
--->
-<!--
- TODO: add a field for exclusive to other objects (not allowed if they're used)
--->
-<!--
- TODO: add "parameters" fields, to replace the form html stuff
--->
-
-<script  type="text/x-red" data-container-name="InputOutputCompatibilityMetadata">
-	{"requirements":[
-
-        {"type":"MIDI_TRS_Input",      "resource":"TRS IN",    "shareable":false},
-
-        {"type":"MIDI_TRS_Output1",    "resource":"TRS OUT 1",   "shareable":false},
-        {"type":"MIDI_TRS_Output2",    "resource":"TRS OUT 2",   "shareable":false},
-        {"type":"MIDI_TRS_Output3",    "resource":"TRS OUT 3",   "shareable":false},
-        {"type":"MIDI_TRS_Output4",    "resource":"TRS OUT 4",   "shareable":false},
-        {"type":"MIDI_TRS_Output5",    "resource":"TRS OUT 5",   "shareable":false},
-        {"type":"MIDI_TRS_Output6",    "resource":"TRS OUT 6",   "shareable":false},
-        {"type":"MIDI_TRS_Output7",    "resource":"TRS OUT 7",   "shareable":false},
-        {"type":"MIDI_TRS_Output8",    "resource":"TRS OUT 8",   "shareable":false},
-
-        {"type":"MIDI_USB_Input",      "resource":"USB IN",    "shareable":false},
-        {"type":"MIDI_USB_Output",     "resource":"USB OUT",   "shareable":false},
-
-        {"type":"MIDI_GB_Link_Input",  "resource":"GB LINK",   "shareable":false},
-        {"type":"MIDI_GB_Link_Output", "resource":"GB LINK",   "shareable":false},
-
-        {"type":"MIDI_Cable_Input",      "resource":"I2S Device",    "shareable":true,  "setting":"I2S Master"},
-		{"type":"MIDI_Channel_Input",    "resource":"I2S Device",    "shareable":true,  "setting":"I2S Master"},
-
-		{"type":"MIDI_Cable_Output",     "resource":"I2S Device",    "shareable":true,  "setting":"I2S Master"},
-		{"type":"MIDI_Channel_Output",   "resource":"I2S Device",    "shareable":true,  "setting":"I2S Master"}
-	]}
-</script>
-
-
-<script  type="text/x-red" data-container-name="NodeDefinitions">
-	{"nodes":[
-		{"type":"MIDI_TRS_Input","data":{"defaults":{"name":{"value":"new"}},"shortName":"TRS-A IN","inputs":0,"outputs":1,"category":"input-function","color":"#E6E0F8","icon":"arrow-in.png"}},		  
-
-		{"type":"MIDI_USB_Input","data":{"defaults":{"name":{"value":"new"}},"shortName":"USB IN","inputs":0,"outputs":1,"category":"input-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_GB_Link_Input","data":{"defaults":{"name":{"value":"new"}},"shortName":"LSDJ","inputs":0,"outputs":1,"category":"input-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-	
-		{"type":"MIDI_TRS_Output1","data":{"defaults":{"name":{"value":"new"}},"shortName":"TRS-A OUT 1","inputs":1,"outputs":0,"category":"output-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_TRS_Output2","data":{"defaults":{"name":{"value":"new"}},"shortName":"TRS-A OUT 2","inputs":1,"outputs":0,"category":"output-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_TRS_Output3","data":{"defaults":{"name":{"value":"new"}},"shortName":"TRS-A OUT 3","inputs":1,"outputs":0,"category":"output-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_TRS_Output4","data":{"defaults":{"name":{"value":"new"}},"shortName":"TRS-A OUT 4","inputs":1,"outputs":0,"category":"output-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_TRS_Output5","data":{"defaults":{"name":{"value":"new"}},"shortName":"TRS-A OUT 5","inputs":1,"outputs":0,"category":"output-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_TRS_Output6","data":{"defaults":{"name":{"value":"new"}},"shortName":"TRS-A OUT 6","inputs":1,"outputs":0,"category":"output-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_TRS_Output7","data":{"defaults":{"name":{"value":"new"}},"shortName":"TRS-A OUT 7","inputs":1,"outputs":0,"category":"output-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_TRS_Output8","data":{"defaults":{"name":{"value":"new"}},"shortName":"TRS-A OUT 8","inputs":1,"outputs":0,"category":"output-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-
-		{"type":"MIDI_USB_Output","data":{"defaults":{"name":{"value":"new"}},"shortName":"USB OUT","inputs":1,"outputs":0,"category":"output-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_GB_Link_Output","data":{"defaults":{"name":{"value":"new"}},"shortName":"mGB","inputs":1,"outputs":0,"category":"output-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-
-		{"type":"MIDI_Channel_Map","data":{"defaults":{"name":{"value":"new"}},"shortName":"chan map","inputs":1,"outputs":1,"category":"transform-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_Key_To_Channel","data":{"defaults":{"name":{"value":"new"}},"shortName":"key to chan","inputs":1,"outputs":1,"category":"transform-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_Vel_To_Channel","data":{"defaults":{"name":{"value":"new"}},"shortName":"velocity to chan","inputs":1,"outputs":1,"category":"transform-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_Key_To_CC","data":{"defaults":{"name":{"value":"new"}},"shortName":"key to CC","inputs":1,"outputs":1,"category":"transform-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_Vel_To_CC","data":{"defaults":{"name":{"value":"new"}},"shortName":"velocity to CC","inputs":1,"outputs":1,"category":"transform-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-
-		{"type":"MIDI_Channel_Filter","data":{"defaults":{"name":{"value":"new"}},"shortName":"chan filter","inputs":1,"outputs":1,"category":"filter-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_Key_Filter","data":{"defaults":{"name":{"value":"new"}},"shortName":"key filter","inputs":1,"outputs":1,"category":"filter-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-
-		{"type":"MIDI_Mixer2","data":{"defaults":{"name":{"value":"new"}},"shortName":"2-1 mixer","inputs":2,"outputs":1,"category":"mixer-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_Mixer3","data":{"defaults":{"name":{"value":"new"}},"shortName":"3-1 mixer","inputs":3,"outputs":1,"category":"mixer-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_Mixer4","data":{"defaults":{"name":{"value":"new"}},"shortName":"4-1 mixer","inputs":4,"outputs":1,"category":"mixer-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_Mixer5","data":{"defaults":{"name":{"value":"new"}},"shortName":"5-1 mixer","inputs":5,"outputs":1,"category":"mixer-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_Mixer6","data":{"defaults":{"name":{"value":"new"}},"shortName":"6-1 mixer","inputs":6,"outputs":1,"category":"mixer-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_Mixer7","data":{"defaults":{"name":{"value":"new"}},"shortName":"7-1 mixer","inputs":7,"outputs":1,"category":"mixer-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_Mixer8","data":{"defaults":{"name":{"value":"new"}},"shortName":"8-1 mixer","inputs":8,"outputs":1,"category":"mixer-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_Mixer9","data":{"defaults":{"name":{"value":"new"}},"shortName":"9-1 mixer","inputs":9,"outputs":1,"category":"mixer-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_Mixer10","data":{"defaults":{"name":{"value":"new"}},"shortName":"10-1 mixer","inputs":10,"outputs":1,"category":"mixer-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_Mixer11","data":{"defaults":{"name":{"value":"new"}},"shortName":"11-1 mixer","inputs":11,"outputs":1,"category":"mixer-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_Mixer12","data":{"defaults":{"name":{"value":"new"}},"shortName":"12-1 mixer","inputs":12,"outputs":1,"category":"mixer-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_Mixer13","data":{"defaults":{"name":{"value":"new"}},"shortName":"13-1 mixer","inputs":13,"outputs":1,"category":"mixer-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_Mixer14","data":{"defaults":{"name":{"value":"new"}},"shortName":"14-1 mixer","inputs":14,"outputs":1,"category":"mixer-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_Mixer15","data":{"defaults":{"name":{"value":"new"}},"shortName":"15-1 mixer","inputs":15,"outputs":1,"category":"mixer-function","color":"#E6E0F8","icon":"arrow-in.png"}},
-		{"type":"MIDI_Mixer16","data":{"defaults":{"name":{"value":"new"}},"shortName":"16-1 mixer","inputs":16,"outputs":1,"category":"mixer-function","color":"#E6E0F8","icon":"arrow-in.png"}}
-	]}
-</script>
-
-<script type="text/x-red" data-help-name="AudioMixer4">
-	<h3>Summary</h3>
-	<div class=tooltipinfo>
-	<p>Combine up to 4 audio signals together, each with adjustable gain.
-		All channels support signal attenuation or amplification.</p>
-	</div>
-	<h3>Audio Connections</h3>
-	<table class=doc align=center cellpadding=3>
-		<tr class=top><th>Port</th><th>Purpose</th></tr>
-		<tr class=odd><td align=center>In 0</td><td>Input signal #1</td></tr>
-		<tr class=odd><td align=center>In 1</td><td>Input signal #2</td></tr>
-		<tr class=odd><td align=center>In 2</td><td>Input signal #3</td></tr>
-		<tr class=odd><td align=center>In 3</td><td>Input signal #4</td></tr>
-		<tr class=odd><td align=center>Out 0</td><td>Sum of all inputs</td></tr>
-	</table>
-	<h3>Functions</h3>
-	<p class=func><span class=keyword>gain</span>(channel, level);</p>
-	<p class=desc>Adjust the amplification or attenuation.  "channel" must
-		be 0 to 3.  "level" may be any floating point number from 0 to 32767.0.
-		1.0 passes the signal through directly.  Level of 0 shuts the channel
-		off completely.  Between 0 to 1.0 attenuates the signal, and above
-		1.0 amplifies it.  Negative numbers may also be used, to invert the
-		signal.  All 4 channels have separate gain settings.
-	</p>
-	<h3>Examples</h3>
-	<p class=exam>File &gt; Examples &gt; Audio &gt; SamplePlayer
-	</p>
-	<p class=exam>File &gt; Examples &gt; Audio &gt; Synthesis &gt; PlaySynthMusic
-	</p>
-	<p class=exam>File &gt; Examples &gt; Audio &gt; Analysis &gt; SpectrumAnalyzerBasic
-	</p>
-	<p class=exam>File &gt; Examples &gt; Audio &gt; Analysis &gt; DialTone_Serial
-	</p>
-	<p class=exam>File &gt; Examples &gt; Audio &gt; MemoryAndCpuUsage
-	</p>
-	<h3>Notes</h3>
-	<p>Signal clipping can occur when any channel has gain greater than 1.0,
-		or when multiple signals add together to greater than 1.0.</p>
-	<p>More than 4 channels may be combined by connecting multiple mixers
-		in tandem.  For example, a 16 channel mixer may be built using 5
-		mixers, where the fifth mixer combines the outputs of the first 4.
-	</p>
-</script>
-<script type="text/x-red" data-template-name="AudioMixer4">
-	<div class="form-row">
-		<label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
-		<input type="text" id="node-input-name" placeholder="Name">
-	</div>
-</script>
-
-<script type="text/x-red" data-help-name="MIDI_Channel_Shift">
-	<h3>Summary</h3>
-	<div class=tooltipinfo>
-	<p>Modify the channel of selected incomming messages</p>
-	</div>
-	<h3>MIDI Connections</h3>
-	<table class=doc align=center cellpadding=3>
-		<tr class=top><th>Port</th><th>Purpose</th></tr>
-		<tr class=odd><td align=center>In 0</td><td>Input signal #1</td></tr>
-		<tr class=odd><td align=center>Out 0</td><td>Sum of all inputs</td></tr>
-	</table>
-	<h3>Notes</h3>
-	<p>Signal clipping can occur when any channel has gain greater than 1.0,
-		or when multiple signals add together to greater than 1.0.</p>
-	<p>More than 4 channels may be combined by connecting multiple mixers
-		in tandem.  For example, a 16 channel mixer may be built using 5
-		mixers, where the fifth mixer combines the outputs of the first 4.
-	</p>
-</script>
-<script type="text/x-red" data-template-name="MIDI_Channel_Shift">
-	<div class="form-row">
-		<label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
-		<input type="text" id="node-input-name" placeholder="Name">
-		<label for="node-input-name"><i class="fa fa-tag"></i> In Chan</label>
-		<input type="text" id="node-input-name" placeholder="1">
-		<label for="node-input-name"><i class="fa fa-tag"></i> Out Chan</label>
-		<input type="text" id="node-input-name" placeholder="2">
-	</div>
-</script>
-
-
 </body>
 </html>
