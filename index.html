@@ -6,14 +6,20 @@
 	<script type="text/javascript" src="pico_hub_nodes.js"></script>
 </head>
 <body style='width:100%; height:100%'>
-  <button onclick="testGraphInspect()">Click me</button>
+  <button onclick="graphExportTA()">Export</button>
+  <button onclick="graphImportTA()">Inport</button>
   <div class='litegraph'>
-    <canvas id='mycanvas' width='2048' height='720' style='border: 1px solid'></canvas>
+    <canvas id='mycanvas' width='2048' height='600' style='border: 1px solid'></canvas>
   </div>
-  <div id='test-graph-inspect'></div>
+  <textarea id='test-graph-inspect' cols='80' rows='40'></textarea>
 <script>
 
 var graph = new LGraph();
+//     * LGraph is the class that contain a full graph. We instantiate one and add nodes to it, and then we can run the execution loop.
+//         * supported callbacks:
+//        	+ onNodeAdded: when a new node is added to the graph
+//        	+ onNodeRemoved: when a node inside this graph is removed
+//        	+ onNodeConnectionChange: some connection has changed in the graph (connected or disconnected)
 
 var canvas = new LGraphCanvas("#mycanvas", graph);
 
@@ -32,6 +38,7 @@ graph.add(node_lsdj_in);
 var in_mixer = LiteGraph.createNode("cable/mixer");
 in_mixer.pos = [200, 200]
 in_mixer.addCableInput("In");
+in_mixer.properties.number_of_inputs += 1
 graph.add(in_mixer);
 
 node_trs_in.connect(0, in_mixer, 0);
@@ -80,9 +87,15 @@ graph.add(node_test);
 graph.start()
 
 
-  function testGraphInspect () {
-    document.getElementById("test-graph-inspect").innerHTML = JSON.stringify(graph.serialize());
-  }
+function graphExportTA () {
+  const text = graph.toPicoHubConfig();
+  document.getElementById("test-graph-inspect").value = text;
+}
+
+function graphImportTA () {
+  const text = document.getElementById("test-graph-inspect").value;
+  graph.loadPicoHubConfig(text);
+}
 
 
 </script>
