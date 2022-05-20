@@ -3,15 +3,35 @@
 	<link rel="stylesheet" type="text/css" href="litegraph.css">
 	<link rel="stylesheet" type="text/css" href="litegraph-editor.css">
 	<script type="text/javascript" src="litegraph.js"></script>
-	<script type="text/javascript" src="pico_hub_nodes.js"></script>
+	<script type="text/javascript" src="litegraph_to_ada.js"></script>
+	<script type="text/javascript" src="midi_signal_flow_nodes.js"></script>
 </head>
 <body style='width:100%; height:100%'>
-  <button onclick="graphExportTA()">Export</button>
-  <button onclick="graphImportTA()">Inport</button>
+  <button onclick="graphExportTA()">Export graph</button>
+  <button onclick="graphImportTA()">Import graph</button>
   <div class='litegraph'>
     <canvas id='mycanvas' width='2048' height='600' style='border: 1px solid'></canvas>
   </div>
-  <textarea id='test-graph-inspect' cols='80' rows='40'></textarea>
+  <textarea id='test-graph-inspect' cols='120' rows='40'>
+node=INPUT/test_cable_input:id=7:pos_x=12:pos_y=279:
+node=CHANNEL/filter_channel:id=2:pos_x=211:pos_y=417:channel_id=1:passthrough=false:
+node=OUTPUT/print_cable:id=3:pos_x=1349:pos_y=114:Name=TRS7:
+node=CHANNEL/merge_channel:id=10:pos_x=1033:pos_y=112:Channel_Id=12:
+node=UTILS/volca_sample:id=1:pos_x=1032:pos_y=316:
+node=OUTPUT/print_cable:id=4:pos_x=1352:pos_y=329:Name=TRS6:
+node=CHANNEL/get_note_msg:id=9:pos_x=496:pos_y=72:Note On=true:Note Off=false:Aftertouch=false:Passthrough=false:
+node=CHANNEL/filter_channel:id=8:pos_x=210:pos_y=75:channel_id=2:passthrough=false:
+node=CHANNEL/keyboard_split:id=5:pos_x=749:pos_y=264:Split Key=60:
+link=CABLE_PORT:1=0:4=0:
+link=CHANNEL_PORT:2=0:5=1:
+link=CHANNEL_PORT:5=1:1=0:
+link=CABLE_PORT:7=0:2=1:
+link=CABLE_PORT:7=0:8=1:
+link=CHANNEL_PORT:8=0:9=0:
+link=DATA_PORT:9=0:5=0:
+link=CHANNEL_PORT:5=0:10=1:
+link=CABLE_PORT:10=0:3=0:
+  </textarea>
 <script>
 
 var graph = new LGraph();
@@ -23,69 +43,7 @@ var graph = new LGraph();
 
 var canvas = new LGraphCanvas("#mycanvas", graph);
 
-var node_trs_in = LiteGraph.createNode("input/trs_in");
-node_trs_in.pos = [10,100];
-graph.add(node_trs_in);
-
-var node_usb_in = LiteGraph.createNode("input/usb_in");
-node_usb_in.pos = [10,200];
-graph.add(node_usb_in);
-
-var node_lsdj_in = LiteGraph.createNode("input/lsdj_in");
-node_lsdj_in.pos = [10,300];
-graph.add(node_lsdj_in);
-
-var in_mixer = LiteGraph.createNode("cable/mixer");
-in_mixer.pos = [200, 200]
-in_mixer.addCableInput("In");
-in_mixer.properties.number_of_inputs += 1
-graph.add(in_mixer);
-
-node_trs_in.connect(0, in_mixer, 0);
-node_usb_in.connect(0, in_mixer, 1);
-node_lsdj_in.connect(0, in_mixer, 2);
-
-
-
-var node_filter = LiteGraph.createNode("channel/filter");
-node_filter.pos = [500,200];
-graph.add(node_filter);
-
-var node_map = LiteGraph.createNode("channel/map");
-node_map.pos = [750,100];
-graph.add(node_map);
-
-var node_merge = LiteGraph.createNode("channel/merge");
-node_merge.pos = [1000,200];
-graph.add(node_merge);
-
-var node_trs_out = LiteGraph.createNode("output/trs_out");
-node_trs_out.pos = [1200,100];
-node_trs_out.properties.port = 7;
-graph.add(node_trs_out);
-
-var node_usb_out = LiteGraph.createNode("output/usb_out");
-node_usb_out.pos = [1200,200];
-graph.add(node_usb_out);
-
-var node_mgb_out = LiteGraph.createNode("output/mgb_out");
-node_mgb_out.pos = [1200,300];
-graph.add(node_mgb_out);
-
-in_mixer.connect(0, node_filter, 0);
-node_filter.connect(0, node_map, 0);
-node_filter.connect(1, node_merge, 1);
-node_map.connect(0, node_merge, 0);
-node_merge.connect(0, node_trs_out, 0);
-node_merge.connect(0, node_usb_out, 0);
-node_merge.connect(0, node_mgb_out, 0);
-
-var node_test = LiteGraph.createNode("pico_hub/test");
-node_test.pos = [400,400];
-graph.add(node_test);
-
 graph.start()
-
 
 function graphExportTA () {
   const text = graph.toPicoHubConfig();
@@ -97,6 +55,7 @@ function graphImportTA () {
   graph.loadPicoHubConfig(text);
 }
 
+graphImportTA();
 
 </script>
 </body>
