@@ -1,35 +1,3 @@
-function Node_INPUT_test_clock_input()
-{
-  that = this;
-  this.addOutput("Clock", "CLOCK_PORT", {shape: LiteGraph.CARD_SHAPE});
-  this.properties = {};
-}
-Node_INPUT_test_clock_input.title = "test_clock_input";
-LiteGraph.registerNodeType("INPUT/test_clock_input", Node_INPUT_test_clock_input);
-function Node_INPUT_test_data_input()
-{
-  that = this;
-  this.addOutput("Data", "DATA_PORT", {shape: LiteGraph.ROUND_SHAPE});
-  this.properties = {};
-}
-Node_INPUT_test_data_input.title = "test_data_input";
-LiteGraph.registerNodeType("INPUT/test_data_input", Node_INPUT_test_data_input);
-function Node_INPUT_test_channel_input()
-{
-  that = this;
-  this.addOutput("Channel", "CHANNEL_PORT", {shape: LiteGraph.ARROW_SHAPE});
-  this.properties = {};
-}
-Node_INPUT_test_channel_input.title = "test_channel_input";
-LiteGraph.registerNodeType("INPUT/test_channel_input", Node_INPUT_test_channel_input);
-function Node_INPUT_test_cable_input()
-{
-  that = this;
-  this.addOutput("Cable", "CABLE_PORT", {shape: LiteGraph.BOX_SHAPE});
-  this.properties = {};
-}
-Node_INPUT_test_cable_input.title = "test_cable_input";
-LiteGraph.registerNodeType("INPUT/test_cable_input", Node_INPUT_test_cable_input);
 function Node_UTILS_volca_sample()
 {
   that = this;
@@ -39,50 +7,6 @@ function Node_UTILS_volca_sample()
 }
 Node_UTILS_volca_sample.title = "volca_sample";
 LiteGraph.registerNodeType("UTILS/volca_sample", Node_UTILS_volca_sample);
-function Node_OUTPUT_print_clock()
-{
-  that = this;
-  this.addInput("In", "CLOCK_PORT", {shape: LiteGraph.CARD_SHAPE});
-  this.properties = {};
-  this.properties["Name"] = "";
-  this.addWidget("text", "Name", "", null,
-               {property: "Name"});
-}
-Node_OUTPUT_print_clock.title = "print_clock";
-LiteGraph.registerNodeType("OUTPUT/print_clock", Node_OUTPUT_print_clock);
-function Node_OUTPUT_print_cable()
-{
-  that = this;
-  this.addInput("In", "CABLE_PORT", {shape: LiteGraph.BOX_SHAPE});
-  this.properties = {};
-  this.properties["Name"] = "";
-  this.addWidget("text", "Name", "", null,
-               {property: "Name"});
-}
-Node_OUTPUT_print_cable.title = "print_cable";
-LiteGraph.registerNodeType("OUTPUT/print_cable", Node_OUTPUT_print_cable);
-function Node_OUTPUT_print_channel()
-{
-  that = this;
-  this.addInput("In", "CHANNEL_PORT", {shape: LiteGraph.ARROW_SHAPE});
-  this.properties = {};
-  this.properties["Name"] = "";
-  this.addWidget("text", "Name", "", null,
-               {property: "Name"});
-}
-Node_OUTPUT_print_channel.title = "print_channel";
-LiteGraph.registerNodeType("OUTPUT/print_channel", Node_OUTPUT_print_channel);
-function Node_OUTPUT_print_data()
-{
-  that = this;
-  this.addInput("In", "DATA_PORT", {shape: LiteGraph.ROUND_SHAPE});
-  this.properties = {};
-  this.properties["Name"] = "";
-  this.addWidget("text", "Name", "", null,
-               {property: "Name"});
-}
-Node_OUTPUT_print_data.title = "print_data";
-LiteGraph.registerNodeType("OUTPUT/print_data", Node_OUTPUT_print_data);
 function Node_CABLE_cable_mixer()
 {
   that = this;
@@ -191,6 +115,31 @@ function Node_CLOCK_filter_clock()
 }
 Node_CLOCK_filter_clock.title = "filter_clock";
 LiteGraph.registerNodeType("CLOCK/filter_clock", Node_CLOCK_filter_clock);
+function Node_CHANNEL_transpose_octave()
+{
+  that = this;
+  this.addInput("Channel", "CHANNEL_PORT", {shape: LiteGraph.ARROW_SHAPE});
+  this.addOutput("Channel", "CHANNEL_PORT", {shape: LiteGraph.ARROW_SHAPE});
+  this.properties = {};
+  this.properties["octave"] =  1;
+  this.addWidget("combo", "octave",  1, null,
+             { values:[
+                   -5,
+                   -4,
+                   -3,
+                   -2,
+                   -1,
+                    0,
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+],
+               property: "octave"});
+}
+Node_CHANNEL_transpose_octave.title = "transpose_octave";
+LiteGraph.registerNodeType("CHANNEL/transpose_octave", Node_CHANNEL_transpose_octave);
 function Node_CHANNEL_merge_channel()
 {
   that = this;
@@ -421,3 +370,64 @@ function Node_CHANNEL_const_chan_id()
 }
 Node_CHANNEL_const_chan_id.title = "const_chan_id";
 LiteGraph.registerNodeType("CHANNEL/const_chan_id", Node_CHANNEL_const_chan_id);
+function Node_OUTPUT_gblink_out()
+{
+  that = this;
+  this.addInput("In", "CABLE_PORT", {shape: LiteGraph.BOX_SHAPE});
+  this.properties = {};
+}
+Node_OUTPUT_gblink_out.title = "gblink_out";
+LiteGraph.registerNodeType("OUTPUT/gblink_out", Node_OUTPUT_gblink_out);
+function Node_OUTPUT_usb_out()
+{
+  that = this;
+  this.addInput("In", "CABLE_PORT", {shape: LiteGraph.BOX_SHAPE});
+  this.properties = {};
+}
+Node_OUTPUT_usb_out.title = "usb_out";
+LiteGraph.registerNodeType("OUTPUT/usb_out", Node_OUTPUT_usb_out);
+function Node_OUTPUT_trs_out()
+{
+  that = this;
+  this.addInput("In", "CABLE_PORT", {shape: LiteGraph.BOX_SHAPE});
+  this.properties = {};
+  this.properties["Port"] =  1;
+  this.addWidget("combo", "Port",  1, null,
+             { values:[
+                    1,
+                    2,
+                    3,
+                    4,
+                    5,
+                    6,
+                    7,
+                    8,
+],
+               property: "Port"});
+}
+Node_OUTPUT_trs_out.title = "trs_out";
+LiteGraph.registerNodeType("OUTPUT/trs_out", Node_OUTPUT_trs_out);
+function Node_INPUT_gblink_in()
+{
+  that = this;
+  this.addOutput("Cable", "CABLE_PORT", {shape: LiteGraph.BOX_SHAPE});
+  this.properties = {};
+}
+Node_INPUT_gblink_in.title = "gblink_in";
+LiteGraph.registerNodeType("INPUT/gblink_in", Node_INPUT_gblink_in);
+function Node_INPUT_usb_in()
+{
+  that = this;
+  this.addOutput("Cable", "CABLE_PORT", {shape: LiteGraph.BOX_SHAPE});
+  this.properties = {};
+}
+Node_INPUT_usb_in.title = "usb_in";
+LiteGraph.registerNodeType("INPUT/usb_in", Node_INPUT_usb_in);
+function Node_INPUT_trs_in()
+{
+  that = this;
+  this.addOutput("Cable", "CABLE_PORT", {shape: LiteGraph.BOX_SHAPE});
+  this.properties = {};
+}
+Node_INPUT_trs_in.title = "trs_in";
+LiteGraph.registerNodeType("INPUT/trs_in", Node_INPUT_trs_in);
