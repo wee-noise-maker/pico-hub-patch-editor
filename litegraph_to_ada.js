@@ -97,3 +97,80 @@ LGraph.prototype.loadPicoHubConfig = function (config) {
         }
     }
 }
+
+LGraph.prototype.isCyclic= function () {
+
+    let adj = [];
+
+    // This function is a variation of DFSUtil() in
+    // https://www.geeksforgeeks.org/archives/18212
+    function isCyclicUtil(i,visited,recStack)
+    {
+        // Mark the current node as visited and
+        // part of recursion stack
+        if (recStack[i])
+            return true;
+
+        if (visited[i])
+            return false;
+
+        visited[i] = true;
+
+        recStack[i] = true;
+        let children = adj[i];
+
+        for (const c in children) {
+            if (isCyclicUtil(children[c], visited, recStack)) {
+                return true;
+            }
+        }
+
+        recStack[i] = false;
+
+        return false;
+    }
+
+    // Returns true if the graph contains a
+    // cycle, else false.
+    // This function is a variation of DFS() in
+    // https://www.geeksforgeeks.org/archives/18212
+    function isCyclic()
+    {
+        // Mark all the vertices as not visited and
+        // not part of recursion stack
+        let visited = [];
+        let recStack = [];
+        for(const node in adj)
+        {
+            visited[node]=false;
+            recStack[node]=false;
+        }
+
+        // Call the recursive helper function to
+        // detect cycle in different DFS trees
+        for(const node in adj) {
+            if (adj[node]) {
+                if (isCyclicUtil(node, visited, recStack)) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+   const data = this.serialize();
+
+   for (const node of data.nodes) {
+       adj[node.id] = [];
+   }
+
+   for (const link of data.links) {
+       const origin_id = link[1];
+       const target_id = link[3];
+
+       adj[origin_id].push(target_id);
+   }
+
+   return isCyclic();
+}

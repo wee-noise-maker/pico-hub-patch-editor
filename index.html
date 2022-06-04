@@ -56,7 +56,12 @@ graph.start()
 
 function graphExportTA () {
   const text = graph.toPicoHubConfig();
-  document.getElementById("test-graph-inspect").value = text;
+  if (graph.isCyclic()) {
+    alert("Cannot export graph that contains a cycle!");
+    document.getElementById("test-graph-inspect").value = "";
+  } else {
+    document.getElementById("test-graph-inspect").value = text;
+  }
 }
 
 function graphImportTA () {
