@@ -16,30 +16,29 @@
   </div>
   <textarea id='test-graph-inspect' cols='120' rows='40'>
 node=INPUT/trs_in:id=1:pos_x=12:pos_y=279:
-node=CHANNEL/filter_channel:id=6:pos_x=211:pos_y=417:channel_id=1:passthrough=false:
-node=CHANNEL/filter_channel:id=8:pos_x=170:pos_y=73:channel_id=2:passthrough=false:
-node=CHANNEL/get_note_msg:id=9:pos_x=417:pos_y=73:Note On=true:Note Off=false:Aftertouch=false:Passthrough=false:
+node=CHANNEL/filter_channel:id=2:pos_x=211:pos_y=417:channel_id=1:passthrough=false:
+node=CHANNEL/filter_channel:id=3:pos_x=170:pos_y=73:channel_id=2:passthrough=false:
+node=CHANNEL/get_note_msg:id=4:pos_x=417:pos_y=73:Note On=true:Note Off=false:Aftertouch=false:Passthrough=false:
 node=CHANNEL/keyboard_split:id=5:pos_x=591:pos_y=315:Split Key=60:
-node=CHANNEL/merge_channel:id=13:pos_x=1172:pos_y=120:Channel_Id=13:
-node=CHANNEL/transpose_octave:id=15:pos_x=914:pos_y=346:octave=-2:
-node=CHANNEL/merge_channel:id=14:pos_x=1157:pos_y=325:Channel_Id=14:
-node=CABLE/cable_mixer:id=10:pos_x=1449:pos_y=246:input_count=2:
-node=OUTPUT/trs_out:id=4:pos_x=1652:pos_y=240:Port=7:
-node=OUTPUT/trs_out:id=3:pos_x=1637:pos_y=509:Port=6:
-node=UTILS/volca_sample:id=2:pos_x=985:pos_y=541:
-link=CABLE_PORT:2=0:3=0:
-link=CHANNEL_PORT:6=0:5=1:
-link=CHANNEL_PORT:5=1:2=0:
-link=CABLE_PORT:1=0:6=1:
-link=CABLE_PORT:1=0:8=1:
-link=CHANNEL_PORT:8=0:9=0:
-link=DATA_PORT:9=0:5=0:
-link=CABLE_PORT:10=0:4=0:
-link=CHANNEL_PORT:5=0:15=0:
-link=CHANNEL_PORT:15=0:14=1:
-link=CABLE_PORT:13=0:10=0:
-link=CABLE_PORT:14=0:10=1:
-link=CHANNEL_PORT:5=0:13=1:
+node=CHANNEL/transpose_octave:id=7:pos_x=914:pos_y=346:octave=-2:
+node=OUTPUT/trs_out:id=11:pos_x=1637:pos_y=509:Port=6:
+node=UTILS/volca_sample:id=12:pos_x=985:pos_y=541:
+node=CHANNEL/merge_channel:id=8:pos_x=1157:pos_y=325:Channel_Id=14:
+node=CHANNEL/merge_channel:id=6:pos_x=1158:pos_y=183:Channel_Id=13:
+node=OUTPUT/trs_out:id=13:pos_x=1445:pos_y=182:Port=5:
+node=OUTPUT/trs_out:id=10:pos_x=1444:pos_y=325:Port=7:
+link=CABLE_PORT:12=0:11=0:
+link=CHANNEL_PORT:2=0:5=1:
+link=CHANNEL_PORT:5=1:12=0:
+link=CABLE_PORT:1=0:2=1:
+link=CABLE_PORT:1=0:3=1:
+link=CHANNEL_PORT:3=0:4=0:
+link=DATA_PORT:4=0:5=0:
+link=CHANNEL_PORT:5=0:7=0:
+link=CHANNEL_PORT:7=0:8=1:
+link=CHANNEL_PORT:5=0:6=1:
+link=CABLE_PORT:8=0:10=0:
+link=CABLE_PORT:6=0:13=0:
   </textarea>
 <script>
 
