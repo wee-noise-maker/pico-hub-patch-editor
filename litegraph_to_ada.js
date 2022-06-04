@@ -4,8 +4,7 @@ LiteGraph.registered_node_types = {}
 LGraph.prototype.toPicoHubConfig = function () {
     const data = this.serialize();
     var text = ""
-
-        for (const node of data.nodes) {
+    for (const node of data.nodes) {
             text += "node=" + node.type + ":";
             text += "id=" + node.id + ":";
             text += "pos_x=" + node.pos[0] + ":";
@@ -52,6 +51,10 @@ LGraph.prototype.loadPicoHubConfig = function (config) {
 
                 if (key == "node") {
                     node = LiteGraph.createNode(value);
+                    if (!node) {
+                        alert("Cannot create node: " + value);
+                        return;
+                    }
                 } else if (key == "id") {
                     id = parseInt(value);
                 } else if (key == "pos_x") {
@@ -59,23 +62,15 @@ LGraph.prototype.loadPicoHubConfig = function (config) {
                 } else if (key == "pos_y") {
                     node.pos[1] = parseInt(value);
                 } else {
-                    if (node.properties && key in node.properties) {
-                        node.properties[key] = value;
+                    var val = value;
+                    if (val == "true") {
+                        val = true;
+                    } else if (val == "false"){
+                        val = false;
                     }
-                }
-            }
+                    // TODO: parse escape chars in string values
 
-            if (node.type == "cable/mixer") {
-                var cnt = 2;
-                while (cnt < node.properties.number_of_inputs) {
-                    node.addCableInput("In");
-                    cnt += 1;
-                }
-            } else if (node.type == "channel/mixer") {
-                var cnt = 2;
-                while (cnt < node.properties.number_of_inputs) {
-                    node.addChannelInput("In");
-                    cnt += 1;
+                    node.setProperty(key, val);
                 }
             }
 
